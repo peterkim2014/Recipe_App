@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='view_recipe.css') }}">
+</head>
+<body>
+    <div id="global">
+    
+        <div class="nav_bar">
+            <div class="left-nav">
+                <h1>Welcome, {{ user.first_name | capitalize }}</h1>
+
+                <h2>{{ recipe.name }}</h2>
+
+            </div>
+            <div class="nav-buttons">
+                <a href="/homepage">Back to recipes</a>
+                <a href="/recipes/new">Create</a>
+                <a href="/">Logout</a>
+            </div>
+        </div>
+    
+        <div class="body">
+            <div class="header">
+                <p>Description : {{ recipe.description }}</p>
+                <p>Under 30 Minutes? : {{ recipe.duration }}</p>
+                <p>Instructions : {{ recipe.instruction }}</p>
+                <p>Date Made : {{ recipe.created_at }}</p>
+                <p>Likes</p>
+            </div>
+
+            <table>
+                <thead>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for user in recipe.liked_by %}
+                        <td>{{ user.first_name }} {{ user.last_name }}</td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+                    
+        </div>
+    
+    </div>
+</body>
