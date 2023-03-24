@@ -69,5 +69,37 @@ def delete_recipe(id):
     if not "user_id" in session:
         flash("Please Log In", "login")
         return redirect("/login_page")
+    
+    data = {
+    "user_id": session["user_id"],
+    "recipe_id": id
+    }
+    Recipe.unlike(data)
     Recipe.delete(id)
+    return redirect("/homepage")
+
+
+@app.route("/like/<int:id>")
+def like_recipe(id):
+    if not "user_id" in session:
+        flash("Please Log In", "login")
+        return redirect("/login_page")
+    data = {
+        "user_id": session["user_id"],
+        "recipe_id": id
+    }
+    Recipe.like(data)
+    return redirect("/homepage")
+    
+@app.route("/unlike/<int:id>")
+def unlike_recipe(id):
+    if not "user_id" in session:
+        flash("Please Log In", "login")
+        return redirect("/login_page")
+    print(id)
+    data = {
+        "user_id": session["user_id"],
+        "recipe_id": id
+    }
+    Recipe.unlike(data)
     return redirect("/homepage")

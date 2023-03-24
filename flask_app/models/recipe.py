@@ -17,6 +17,31 @@ class Recipe:
         self.duration = None
         self.liked_by = []
 
+    def is_liked_by(self, id):
+        found_user = None
+        for user in self.liked_by:
+            if user.id == id:
+                found_user = user
+        return found_user != None
+
+    @classmethod
+    def like(cls, data):
+        query = """
+            INSERT INTO likes (user_id, recipe_id) VALUES (%(user_id)s, %(recipe_id)s);
+        """
+        result = MySQLConnection(cls.dB).query_db(query, data)
+        return result
+
+    @classmethod
+    def unlike(cls, data):
+        query = """
+            DELETE FROM likes WHERE 
+            user_id = %(user_id)s AND recipe_id = %(recipe_id)s;
+        """
+        result = MySQLConnection(cls.dB).query_db(query, data)
+        print(result)
+        return result
+
     @classmethod
     def save(cls, data):
         query = """
@@ -96,6 +121,8 @@ class Recipe:
             print(likes)
             return likes
         return None
+    
+    
     
     @staticmethod
     def validate_recipe(data):
