@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='edit_recipe.css') }}">
+</head>
+<body>
+    
+    <div id="global">
+        
+        <div class="nav_bar">
+            <h1>Edit your Recipe!</h1>
+            <div class="nav-buttons">
+                <a href="/homepage">Back to recipes</a>
+                <a href="/">Logout</a>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(category_filter=['create_recipe']) %}
+        {% if messages %}
+            {% for message in messages %}
+                <p class="flash_login">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form class="recipe_form" method="POST" action="/edit/recipe">
+            <input type="hidden" name="id" value={{ recipe.id }}>
+            <label for="name">
+                Name
+                <input type="text" name="name" value={{ recipe.name }}>
+            </label>
+            <label for="description">
+                Description
+                <input type="text" name="description" value={{ recipe.description }}>
+            </label>
+            <label for="instruction">
+                Instructions
+                <input type="text" name="instruction" value={{ recipe.instruction }}>
+            </label>
+            <label for="date">
+                Date Cooked/Made
+                <input type="date" name="date" value={{ recipe.created_at }}>
+            </label>
+            <label for="duration">
+                Under 30 minutes?
+                {% if recipe.duration == "yes" %}
+                <label>
+                    Yes
+                    <input type="radio" name="duration" value="yes"  checked>
+                </label>
+                <label>
+                    No
+                    <input type="radio" name="duration" value="no">
+                </label>
+                    {% else %}
+                    <label>
+                        Yes
+                        <input type="radio" name="duration" value="yes">
+                    </label>
+                    <label>
+                        No
+                        <input type="radio" name="duration" value="no" checked>
+                    </label>
+                </label>
+                {% endif %}
+
+            </label>
+            <button>Submit</button>
+        </form>
+    </div>
+
+
+</body>
+</html>

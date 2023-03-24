@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='edit_recipe.css') }}">
+</head>
+<body>
+    
+    <div id="global">
+        
+        <div class="nav_bar">
+            <h1>Add a New Recipe!</h1>
+            <div class="nav-buttons">
+                <a href="/homepage">Back to recipes</a>
+                <a href="/">Logout</a>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(category_filter=['create_recipe']) %}
+        {% if messages %}
+            {% for message in messages %}
+                <p class="flash_login">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form class="recipe_form" method="POST" action="/recipes/new/create">
+            <label for="name">
+                Name
+                <input type="text" name="name"/>
+            </label>
+            <label for="description">
+                Description
+                <input type="text" name="description"/>
+            </label>
+            <label for="instruction">
+                Instructions
+                <input type="text" name="instruction"/>
+            </label>
+            <label for="date">
+                Date Cooked/Made
+                <input type="date" name="date"/>
+            </label>
+            <label for="duration">
+                Under 30 minutes?
+                <label for="duration">
+                    Yes
+                    <input type="radio" name="duration" placeholder="yes" value="yes"/>
+                </label>
+                <label for="duration">
+                    No
+                    <input type="radio" name="duration" value="no"/>
+                </label>
+            </label>
+            <button>Submit</button>
+        </form>
+    </div>
+
+
+</body>
+</html>
