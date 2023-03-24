@@ -13,9 +13,7 @@ def homepage():
     user = User.get_by_id(user_id)
 
     all_recipes = Recipe.get_all()
-    # likes = Recipe.get_many_id(user_id)
     
-
     return render_template("home_page.html", all_recipes=all_recipes, user=user)
 
 @app.route("/view/<int:id>")
@@ -101,7 +99,6 @@ def unlike_recipe(id):
     if not "user_id" in session:
         flash("Please Log In", "login")
         return redirect("/login_page")
-    print(id)
     data = {
         "user_id": session["user_id"],
         "recipe_id": id
