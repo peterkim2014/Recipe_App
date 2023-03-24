@@ -70,6 +70,9 @@ def delete_recipe(id):
         flash("Please Log In", "login")
         return redirect("/login_page")
     
+    # error message : 
+    # Something went wrong (1451, 'Cannot delete or update a parent row: a foreign key constraint fails (`recipes_data`.`likes`, CONSTRAINT `fk_likes_recipes1` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`))')
+    # Cannot delete recipe
     data = {
     "user_id": session["user_id"],
     "recipe_id": id
@@ -79,6 +82,8 @@ def delete_recipe(id):
     return redirect("/homepage")
 
 
+# cant like and unlike
+# how to get rid of duplicates
 @app.route("/like/<int:id>")
 def like_recipe(id):
     if not "user_id" in session:
