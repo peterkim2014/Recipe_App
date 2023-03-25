@@ -1,7 +1,6 @@
 from flask_app.config.mysqlconnection import MySQLConnection
 from flask import flash
 
-
 class Recipe:
 
     dB = "recipes_data"
@@ -16,20 +15,29 @@ class Recipe:
         self.user_id = recipe_data["user_id"]
         self.duration = None
         self.liked_by = []
+        self.creator = None
 
     def is_liked_by(self, id):
-        found_user = None
         for user in self.liked_by:
+            print(user.id)
             if user.id == id:
-                found_user = user
-        return found_user != None
-
+                print("true", "is_liked_by")
+                return True
+            else:
+                print("false", "is_liked_by")
+                return False
+        print("false", "is_liked_by")
+        return False
+        # found_users = list(filter(lambda user: user.id == id, self.liked_by))
+        # return len(found_users) > 0
+    
     @classmethod
     def like(cls, data):
         query = """
             INSERT INTO likes (user_id, recipe_id) VALUES (%(user_id)s, %(recipe_id)s);
         """
         result = MySQLConnection(cls.dB).query_db(query, data)
+        print("liked", result)
         return result
 
     @classmethod
@@ -39,8 +47,94 @@ class Recipe:
             user_id = %(user_id)s AND recipe_id = %(recipe_id)s;
         """
         result = MySQLConnection(cls.dB).query_db(query, data)
-        print(result)
+        print("unliked", result)
         return result
+    
+    @classmethod
+    def get_one_with_likes(cls, id):
+        from flask_app.models.user import User
+        query = """
+            SELECT * FROM recipes LEFT JOIN users ON recipes.user_id = users.id LEFT JOIN likes ON users.id = likes.user_id WHERE likes.user_id = %(id)s; 
+        """
+        results = MySQLConnection(cls.dB).query_db(query, {"id": id})
+        print(results)
+        
+        if results:
+            one_with_likes = cls(results[0])
+
+            for result in results:
+                if result["user_id"]:
+                    likes_data = {
+                        "id": result["users.id"],
+                        "first_name": result["first_name"],
+                        "last_name": result["last_name"],
+                        "email": result["email"],
+                        "password": result["password"],
+                        "created_at": result["created_at"],
+                        "updated_at": result["updated_at"]
+                    }
+                    one_with_likes.liked_by.append(User(likes_data))
+            # print(one_with_likes, "*"*20)
+            return one_with_likes 
+
+    @classmethod
+    def get_many_id(cls, id):
+        from flask_app.models.user import User
+        query = """
+            SELECT * 
+            FROM recipes 
+            LEFT JOIN likes ON likes.recipe_id = recipes.id 
+            LEFT JOIN users ON users.id = likes.user_id
+            WHERE recipes.id = %(id)s;
+        """
+        results = MySQLConnection(cls.dB).query_db(query, {"id": id})
+
+        if results:
+            likes = cls(results[0])
+
+            for result in results:
+                if result["user_id"]:
+                    likes_data = {
+                        "id": result["users.id"],
+                        "first_name": result["first_name"],
+                        "last_name": result["last_name"],
+                        "email": result["email"],
+                        "password": result["password"],
+                        "created_at": result["created_at"],
+                        "updated_at": result["updated_at"]
+                    }
+                    likes.liked_by.append(User(likes_data))
+            return likes
+        return None
+    
+    @classmethod
+    def get_many(cls):
+        from flask_app.models.user import User
+        query = """
+            SELECT * 
+            FROM recipes 
+            LEFT JOIN likes ON likes.recipe_id = recipes.id 
+            LEFT JOIN users ON users.id = likes.user_id;
+        """
+        results = MySQLConnection(cls.dB).query_db(query)
+        
+        if results:
+
+            for result in results:
+                likes = cls(results[0])
+                if result["user_id"]:
+                    likes_data = {
+                        "id": result["users.id"],
+                        "first_name": result["first_name"],
+                        "last_name": result["last_name"],
+                        "email": result["email"],
+                        "password": result["password"],
+                        "created_at": result["created_at"],
+                        "updated_at": result["updated_at"]
+                    }
+                    likes.liked_by.append(User(likes_data))
+            return likes
+        return None
 
     @classmethod
     def save(cls, data):
@@ -61,7 +155,6 @@ class Recipe:
             SELECT * FROM recipes WHERE id = %(id)s;
         """
         result = MySQLConnection(cls.dB).query_db(query, {"id": id})
-        print(cls(result[0]) if result else None)
         return cls(result[0]) if result else None
     
     @classmethod
@@ -70,7 +163,6 @@ class Recipe:
             UPDATE recipes SET name = %(name)s, description = %(description)s, instruction = %(instruction)s, duration = %(duration)s WHERE id = %(id)s;
         """
         result = MySQLConnection(cls.dB).query_db(query, data)
-        print(cls(result[0]) if result else None)
         return result
     
     @classmethod
@@ -87,42 +179,15 @@ class Recipe:
             SELECT * FROM recipes LEFT JOIN users ON recipes.user_id = users.id;
         """
         result = MySQLConnection(cls.dB).query_db(query)
-        return result    
-    
-    @classmethod
-    def get_many_id(cls, id):
-        from flask_app.models.user import User
-        query = """
-            SELECT * 
-            FROM recipes 
-            LEFT JOIN likes ON likes.recipe_id = recipes.id 
-            LEFT JOIN users ON users.id = likes.user_id
-            WHERE recipes.id = %(id)s;
-        """
-        results = MySQLConnection(cls.dB).query_db(query, {"id": id})
-
-        print(results)
-
-        if results:
-            likes = cls(results[0])
-
-            for result in results:
-                if result["user_id"]:
-                    likes_data = {
-                        "id": result["users.id"],
-                        "first_name": result["first_name"],
-                        "last_name": result["last_name"],
-                        "email": result["email"],
-                        "password": result["password"],
-                        "created_at": result["created_at"],
-                        "updated_at": result["updated_at"]
-                    }
-                    likes.liked_by.append(User(likes_data))
-            print(likes)
-            return likes
-        return None
-    
-    
+        # print(result)
+        # list = []
+        # for i in result
+            # varaible = get_many_by_id(i.id) | return a list
+            # data_dict_user = {"id" : i["user.id"]}
+            # variable.creator = User(data_dict_user)
+            # list.append(variable)
+            # return list
+        return result
     
     @staticmethod
     def validate_recipe(data):

@@ -35,25 +35,32 @@
                             <td>{{ recipe.duration }}</td>
                             <td>{{ recipe.first_name }}</td>
                             {% if recipe.user_id == user.id %}
-                            <td>
-                                <a href="/like/{{ recipe.id }}">Like</a>
-                            </td>
-                            <td>
-                                <div class="action_links">
-                                    <a href="/view/{{ recipe.id }}">View</a>
-                                    <a href="/edit/{{ recipe.id }}">Edit</a>
-                                    <a href="/delete/{{ recipe.id }}">Delete</a>
-                                </div>
-                            </td>
-                            {% else %}
-                            <td>
-                                <a href="/like/{{ recipe.id }}">Like</a>
-                            </td>
-                            <td>
-                                <div class="action_links">
-                                    <a href="/view/{{ recipe.id }}">View</a>
-                                </div>
-                            </td>
+                                <td>
+                                    {% if one_with_likes.id != user.id %}
+                                    <a href="/like/{{ recipe.id }}">Like</a>
+                                    {% else %}
+                                    <a href="/unlike/{{ recipe.id }}">Unlike</a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="action_links">
+                                        <a href="/view/{{ recipe.id }}">View</a>
+                                        <a href="/edit/{{ recipe.id }}">Edit</a>
+                                        <a href="/delete/{{ recipe.id }}">Delete</a>
+                                    </div>
+                                </td>
+                                {% else %}
+                                <td>
+                                    
+                                    <a href="/like/{{ recipe.id }}">Like</a>
+                                    <a href="/unlike/{{ recipe.id }}">Unlike</a>
+                                    
+                                </td>
+                                <td>
+                                    <div class="action_links">
+                                        <a href="/view/{{ recipe.id }}">View</a>
+                                    </div>
+                                </td>
                             {% endif %}
                         </tr>
                     {% endfor %}

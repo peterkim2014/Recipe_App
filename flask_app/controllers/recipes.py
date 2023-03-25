@@ -11,10 +11,15 @@ def homepage():
 
     user_id = session["user_id"]
     user = User.get_by_id(user_id)
-
     all_recipes = Recipe.get_all()
+    one_with_likes = Recipe.get_one_with_likes(user_id)
+    # likes_by_user = Recipe.get_many()
+    # print(likes_by_user)
+    # print(one_with_likes)
+
+
     
-    return render_template("home_page.html", all_recipes=all_recipes, user=user)
+    return render_template("home_page.html", all_recipes=all_recipes, user=user, one_with_likes=one_with_likes if one_with_likes else None)
 
 @app.route("/view/<int:id>")
 def view_recipe(id):
@@ -23,6 +28,7 @@ def view_recipe(id):
         return redirect("/login_page")
     recipe = Recipe.get_many_id(id)
     user = User.get_by_id(session["user_id"])
+
     return render_template("view_recipe.html", recipe=recipe, user=user)
 
 @app.route("/recipes/new")
@@ -67,31 +73,25 @@ def delete_recipe(id):
     if not "user_id" in session:
         flash("Please Log In", "login")
         return redirect("/login_page")
-    
-    # error message : 
-    # Something went wrong (1451, 'Cannot delete or update a parent row: a foreign key constraint fails (`recipes_data`.`likes`, CONSTRAINT `fk_likes_recipes1` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`))')
-    # Cannot delete recipe
-    data = {
-    "user_id": session["user_id"],
-    "recipe_id": id
-    }
-    Recipe.unlike(data)
     Recipe.delete(id)
     return redirect("/homepage")
 
 
 # cant like and unlike
-# how to get rid of duplicates
+# how to get rid of duplicates (line 93-94)
 @app.route("/like/<int:id>")
 def like_recipe(id):
     if not "user_id" in session:
         flash("Please Log In", "login")
         return redirect("/login_page")
-    data = {
-        "user_id": session["user_id"],
-        "recipe_id": id
-    }
-    Recipe.like(data)
+    if Recipe.get_one_with_likes(session["user_id"]) == None:
+        data = {
+            "user_id": session["user_id"],
+            "recipe_id": id
+        }
+        Recipe.like(data)
+        print("liked")
+        return redirect("/homepage")
     return redirect("/homepage")
     
 @app.route("/unlike/<int:id>")
@@ -103,5 +103,8 @@ def unlike_recipe(id):
         "user_id": session["user_id"],
         "recipe_id": id
     }
-    Recipe.unlike(data)
+    if Recipe.get_one_with_likes(session["user_id"]) != None:
+        Recipe.unlike(data)
+        print("unliked")
+        return redirect("/homepage")
     return redirect("/homepage")
