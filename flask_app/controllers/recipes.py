@@ -12,21 +12,21 @@ def homepage():
     user_id = session["user_id"]
     user = User.get_by_id(user_id)
     all_recipes = Recipe.get_all()
-    one_with_likes = Recipe.get_one_with_likes(user_id)
+    # one_with_likes = Recipe.get_one_with_likes(user_id)
     # likes_by_user = Recipe.get_many()
     # print(likes_by_user)
     # print(one_with_likes)
 
 
     
-    return render_template("home_page.html", all_recipes=all_recipes, user=user, one_with_likes=one_with_likes if one_with_likes else None)
+    return render_template("home_page.html", all_recipes=all_recipes, user=user, one_with_likes = Recipe.get_many_id(user_id))
 
 @app.route("/view/<int:id>")
 def view_recipe(id):
     if not "user_id" in session:
         flash("Please Log In", "login")
         return redirect("/login_page")
-    recipe = Recipe.get_many_id(id)
+    recipe = Recipe.get_one_with_likes(id)
     user = User.get_by_id(session["user_id"])
 
     return render_template("view_recipe.html", recipe=recipe, user=user)
@@ -84,7 +84,7 @@ def like_recipe(id):
     if not "user_id" in session:
         flash("Please Log In", "login")
         return redirect("/login_page")
-    if Recipe.get_one_with_likes(session["user_id"]) == None:
+    if Recipe.get_one_with_likes(session["user_id"]) != None:
         data = {
             "user_id": session["user_id"],
             "recipe_id": id

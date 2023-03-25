@@ -54,7 +54,7 @@ class Recipe:
     def get_one_with_likes(cls, id):
         from flask_app.models.user import User
         query = """
-            SELECT * FROM recipes LEFT JOIN users ON recipes.user_id = users.id LEFT JOIN likes ON users.id = likes.user_id WHERE likes.user_id = %(id)s; 
+            SELECT * FROM recipes LEFT JOIN likes ON likes.recipe_id = recipes.id LEFT JOIN users ON users.id = likes.user_id WHERE recipes.id = %(id)s; 
         """
         results = MySQLConnection(cls.dB).query_db(query, {"id": id})
         print(results)
@@ -76,16 +76,14 @@ class Recipe:
                     one_with_likes.liked_by.append(User(likes_data))
             # print(one_with_likes, "*"*20)
             return one_with_likes 
+        else:
+            return None
 
     @classmethod
     def get_many_id(cls, id):
         from flask_app.models.user import User
         query = """
-            SELECT * 
-            FROM recipes 
-            LEFT JOIN likes ON likes.recipe_id = recipes.id 
-            LEFT JOIN users ON users.id = likes.user_id
-            WHERE recipes.id = %(id)s;
+            SELECT * FROM recipes LEFT JOIN likes ON likes.recipe_id = recipes.id LEFT JOIN users ON users.id = likes.user_id WHERE likes.user_id = %(id)s;
         """
         results = MySQLConnection(cls.dB).query_db(query, {"id": id})
 
