@@ -74,8 +74,12 @@
                 <tbody>
 
                     <td>
-                        {% for like in one_with_likes.liked_by %}
-                        {{ like.id }}
+                        {% for recipe in all_recipes %}
+                        |START| recipe.id {{recipe.id}}
+                        {% for user in one_with_likes.liked_by %}
+                        || recipe.id {{one_with_likes.id}}
+                        user.id {{ user.id }} |FINISH|
+                        {% endfor %}
                         {% endfor %}
                     </td>
 

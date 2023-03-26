@@ -52,6 +52,17 @@ class Recipe:
         return result
     
     @classmethod
+    def check_like(cls, data):
+        query = """
+            SELECT * FROM likes WHERE user_id = %(user_id)s and recipe_id = %(recipe_id)s;
+        """
+        result = MySQLConnection(cls.dB).query_db(query, data)
+        if result:
+            return True
+        else:
+            return False
+
+    @classmethod
     def get_one_with_likes(cls, id):
         from flask_app.models.user import User
         query = """

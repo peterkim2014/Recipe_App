@@ -79,16 +79,38 @@ def like_recipe(id):
     if not "user_id" in session:
         flash("Please Log In", "login")
         return redirect("/login_page")
-    if Recipe.get_many_id(session["user_id"]) == None:
-        data = {
-            "user_id": session["user_id"],
-            "recipe_id": id
-        }
+    data = {
+                "user_id": session["user_id"],
+                "recipe_id": id
+            }
+
+    is_liked = Recipe.get_many_id(session["user_id"])
+    if is_liked:
+        for recipe in is_liked:
+            print(recipe.id)
+            print(id)
+            if Recipe.check_like(data) == False:
+                print("LIKED")
+                Recipe.like(data)
+                return redirect("/homepage")
+            else:
+                print("ALREADY LIKED")
+    else:
+        print("Added to DB")
         Recipe.like(data)
-        print("liked")
-        return redirect("/homepage")
+
+
+    # if Recipe.get_many_id(session["user_id"]) == None:
+    #     data = {
+    #         "user_id": session["user_id"],
+    #         "recipe_id": id
+    #     }
+    #     Recipe.like(data)
+    #     print("liked")
+    #     return redirect("/homepage")
     return redirect("/homepage")
     
+
 @app.route("/unlike/<int:id>")
 def unlike_recipe(id):
     if not "user_id" in session:
