@@ -60,8 +60,7 @@
                                     </div>
                                     {% endif %}
                                 </td>
-
-                            
+                  
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -69,18 +68,15 @@
             <hr>
             <table>
                 <tbody>
-
+                    {% for recipe in all_recipes %}
                     <td>
-                        {% for recipe in all_recipes %}
                         |START| recipe.id : {{recipe.id}}
                         {% for user in one_with_likes.liked_by %}
                         || user.first_name : {{user.first_name}} ~
                         user.id : {{ user.id }} |FINISH|
                         {% endfor %}
-                        {% endfor %}
                     </td>
-
-
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
