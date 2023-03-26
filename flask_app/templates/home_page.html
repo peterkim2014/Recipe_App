@@ -39,8 +39,8 @@
                             <td>{{ recipe.duration }}</td>
                             <td>{{ recipe.creator.first_name }}</td>
                             <td>
-                                {% for like in one_with_likes.liked_by %}
-                                {% if like.id != recipe.id %}
+                                {% for user in one_with_likes.liked_by %}
+                                {% if user.id != all_likes.user_id %}
                                 <a href="/like/{{ recipe.id }}">Like</a>
                                 {% else %}
                                 <a href="/unlike/{{ recipe.id }}">Unlike</a>
@@ -72,10 +72,10 @@
 
                     <td>
                         {% for recipe in all_recipes %}
-                        |START| recipe.id {{recipe.id}}
+                        |START| recipe.id : {{recipe.id}}
                         {% for user in one_with_likes.liked_by %}
-                        || recipe.id {{user.first_name}}
-                        user.id {{ user.id }} |FINISH|
+                        || user.first_name : {{user.first_name}} ~
+                        user.id : {{ user.id }} |FINISH|
                         {% endfor %}
                         {% endfor %}
                     </td>
