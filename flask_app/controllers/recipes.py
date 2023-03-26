@@ -60,9 +60,24 @@ def edit_recipe():
     if not "user_id" in session:
         flash("Please Log In", "login")
         return redirect("/login_page")
-    recipe = Recipe.get_by_id(request.form["id"])
-    if not recipe or recipe.user_id != session["user_id"]:
+    data = {
+        "id": request.form["id"],
+        "name": request.form["name"],
+        "description": request.form["description"],
+        "instruction": request.form["instruction"],
+        "duration": request.form["duration"],
+        "user_id": session["user_id"]
+    }
+    
+    if Recipe.validate_recipe(data):
+        Recipe.update_recipe(data)
         return redirect("/homepage")
+    else:
+        return redirect("/homepage")
+
+    # recipe = Recipe.get_by_id(request.form["id"])
+    # if not recipe or recipe.user_id != session["user_id"]:
+    #     return redirect("/homepage")
     
 @app.route("/delete/<int:id>")
 def delete_recipe(id):

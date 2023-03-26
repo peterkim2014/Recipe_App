@@ -19,7 +19,7 @@
             </div>
         </div>
 
-
+        {{ one_with_likes.id }}
 
         <div class="body">
             <table class='table'>
@@ -40,7 +40,7 @@
                             <td>{{ recipe.creator.first_name }}</td>
                             <td>
                                 {% for user in one_with_likes.liked_by %}
-                                {% if user.id != all_likes.user_id %}
+                                {% if user.id != recipe.id %}
                                 <a href="/like/{{ recipe.id }}">Like</a>
                                 {% else %}
                                 <a href="/unlike/{{ recipe.id }}">Unlike</a>
