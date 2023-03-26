@@ -58,7 +58,6 @@ class Recipe:
             SELECT * FROM recipes LEFT JOIN likes ON likes.recipe_id = recipes.id LEFT JOIN users ON users.id = likes.user_id WHERE recipes.id = %(id)s; 
         """
         results = MySQLConnection(cls.dB).query_db(query, {"id": id})
-        print(results)
         
         if results:
             one_with_likes = cls(results[0])
@@ -87,6 +86,7 @@ class Recipe:
             SELECT * FROM recipes LEFT JOIN likes ON likes.recipe_id = recipes.id LEFT JOIN users ON users.id = likes.user_id WHERE likes.user_id = %(id)s;
         """
         results = MySQLConnection(cls.dB).query_db(query, {"id": id})
+        print(results)
         if results:
             likes_list = []
             for result in results:
@@ -99,9 +99,9 @@ class Recipe:
                     "created_at": result["users.created_at"],
                     "updated_at": result["users.updated_at"]
                 }
-                liked_by = User(user_data)
+                user = User(user_data)
                 like = cls(result)
-                like.liked_by = liked_by
+                like.liked_by = user
                 likes_list.append(like)
             return likes_list
         return None

@@ -12,7 +12,7 @@ def homepage():
     user_id = session["user_id"]
     user = User.get_by_id(user_id)
     all_recipes = Recipe.get_all()
-    one_with_likes = Recipe.get_many_id(user_id)
+    one_with_likes = Recipe.get_one_with_likes(user_id)
     
     return render_template("home_page.html", all_recipes=all_recipes, user=user, one_with_likes=one_with_likes)
 

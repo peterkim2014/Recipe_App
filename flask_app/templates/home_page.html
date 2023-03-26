@@ -40,11 +40,10 @@
                             <td>{{ recipe.creator.first_name }}</td>
                             {% if recipe.user_id == user.id %}
                                 <td>
-                                    {% if one_with_likes == recipe.id %}
+                                    
                                     <a href="/like/{{ recipe.id }}">Like</a>
-                                    {% else %}
+                                    
                                     <a href="/unlike/{{ recipe.id }}">Unlike</a>
-                                    {% endif %}
                                     
                                 </td>
                                 <td>
@@ -75,8 +74,11 @@
                 <tbody>
 
                     <td>
-
+                        {% for like in one_with_likes.liked_by %}
+                        {{ like.id }}
+                        {% endfor %}
                     </td>
+
 
                 </tbody>
             </table>
