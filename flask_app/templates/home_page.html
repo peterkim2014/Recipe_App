@@ -24,6 +24,7 @@
         <div class="body">
             <table class='table'>
                 <thead>
+                    <th>ID</th>
                     <th>Name</th>
                     <th>Under</th>
                     <th>Posted By</th>
@@ -33,16 +34,18 @@
                 <tbody>
                     {% for recipe in all_recipes %}
                         <tr>
+                            <td>{{ recipe.id }}</td>
                             <td>{{ recipe.name | capitalize }}</td>
                             <td>{{ recipe.duration }}</td>
-                            <td>{{ recipe.first_name }}</td>
+                            <td>{{ recipe.creator.first_name }}</td>
                             {% if recipe.user_id == user.id %}
                                 <td>
-                                    {% if one_with_likes.user_id != user.id %}
+                                    {% if one_with_likes == recipe.id %}
                                     <a href="/like/{{ recipe.id }}">Like</a>
                                     {% else %}
                                     <a href="/unlike/{{ recipe.id }}">Unlike</a>
                                     {% endif %}
+                                    
                                 </td>
                                 <td>
                                     <div class="action_links">
@@ -65,9 +68,16 @@
                             {% endif %}
                         </tr>
                     {% endfor %}
-                    <tr>
+                </tbody>
+            </table>
+            <hr>
+            <table>
+                <tbody>
 
-                    </tr>
+                    <td>
+
+                    </td>
+
                 </tbody>
             </table>
         </div>
